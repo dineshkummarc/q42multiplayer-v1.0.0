@@ -1,0 +1,343 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Q42.Wheels.Multiplayer</name>
+    </assembly>
+    <members>
+        <member name="T:Q42.Wheels.Multiplayer.User">
+            <summary>
+            A User is a single client connection within a room. A user can store any number
+            of name/value properties, and collects its own list of Events that needs to be
+            sent down to the client at every Ping.
+            </summary>
+        </member>
+        <member name="F:Q42.Wheels.Multiplayer.User.idCounter">
+            <summary>
+            Static counter to set new id's that auto increment.
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.User.#ctor">
+            <summary>
+            Creates a new User and generates its id.
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.User.SetProperty(System.String,System.String)">
+            <summary>
+            Sets a name/value property and creates it if it doesn't exist.
+            Also sets this User's LastModified date.
+            </summary>
+            <param name="name">Name of the property.</param>
+            <param name="value">Value of the property.</param>
+            <returns>The property object that was set.</returns>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.User.Id">
+            <summary>
+            Id of the User.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.User.LastModified">
+            <summary>
+            Timestamp of the last modification to any property of this User.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.User.LastPing">
+            <summary>
+            Timestamp of the previous ping that this user has performed.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.User.Properties">
+            <summary>
+            List of all properties belonging to this user.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.User.Events">
+            <summary>
+            List of all events ready for shipping at the next ping.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.User.Room">
+            <summary>
+            The Room this User is in.
+            </summary>
+        </member>
+        <member name="T:Q42.Wheels.Multiplayer.Room">
+            <summary>
+            A Room is a virtual area that holds any number of Users that are currently
+            "present". 
+            </summary>
+        </member>
+        <member name="F:Q42.Wheels.Multiplayer.Room.idCounter">
+            <summary>
+            Static counter to set new id's that auto increment.
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Room.#ctor(System.String)">
+            <summary>
+            Creates a new Room instance.
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Room.AddUser(Q42.Wheels.Multiplayer.User)">
+            <summary>
+            Adds a new user to the room.
+            </summary>
+            <param name="user">User to add.</param>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Room.RemoveUser(Q42.Wheels.Multiplayer.User)">
+            <summary>
+            Removes a user from the list and adds a DisconnectEvent to handle
+            the notification to other users within this room.
+            </summary>
+            <param name="user">User to remove.</param>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Room.ContainsUser(Q42.Wheels.Multiplayer.User)">
+            <summary>
+            Returns true if the requested User is currently present in this room.
+            </summary>
+            <param name="user">User to check.</param>
+            <returns>True if the requested User is currently present in this room.</returns>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Room.DispatchEvent(Q42.Wheels.Multiplayer.Event)">
+            <summary>
+            Dispatches an event to all Users in this Room.
+            </summary>
+            <param name="evt"></param>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Room.Id">
+            <summary>
+            Id of the room.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Room.Name">
+            <summary>
+            Name of the room.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Room.Users">
+            <summary>
+            List of Users currently present in this room.
+            </summary>
+        </member>
+        <member name="T:Q42.Wheels.Multiplayer.Property">
+            <summary>
+            A name/value property with timestamp. When made persistent, it can be considered a
+            user property. When made non-persistent, it can be considered as an Event.
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Property.#ctor">
+            <summary>
+            Creates a new property and marks it as modified.
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Property.#ctor(System.String,System.String)">
+            <summary>
+            Creates a property by name and value, and marks it as modified.
+            </summary>
+            <param name="name">Name of the property.</param>
+            <param name="value">Value of the property.</param>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Property.#ctor(System.String,System.String,System.Boolean)">
+            <summary>
+            Creates a property by name, value and persistency, and marks it as modified.
+            </summary>
+            <param name="name">Name of the property.</param>
+            <param name="value">Value of the property.</param>
+            <param name="persistent">Makes the property persistent or not.</param>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Property.Persistent">
+            <summary>
+            Sets or gets the persistency value. If the persistent is set to true, 
+            new users within a room should always be notified of its current value.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Property.Name">
+            <summary>
+            Name of the property.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Property.Value">
+            <summary>
+            Value of the property.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Property.LastModified">
+            <summary>
+            Timestamp of the last modification to this property's value.
+            </summary>
+        </member>
+        <member name="T:Q42.Wheels.Multiplayer.Event">
+            <summary>
+            The Event class represents a User's property change. It holds 
+            a reference to the specific User, and a Property of what 
+            has been changed. Events are collected per User, and when that
+            User pings, its Event list is cleared.
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Event.#ctor(Q42.Wheels.Multiplayer.User,Q42.Wheels.Multiplayer.Property)">
+            <summary>
+            Creates a new property change Event instance for the give User
+            and the given Property.
+            </summary>
+            <param name="user"></param>
+            <param name="property"></param>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Event.User">
+            <summary>
+            The User of which the Property was changed.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Event.Property">
+            <summary>
+            The Property that was changed.
+            </summary>
+        </member>
+        <member name="T:Q42.Wheels.Multiplayer.Ping">
+            <summary>
+            A Ping instance is created every time the browser polls the server.
+            Ping takes care of the property modifications for the current User, and
+            holds list of Events to notify this user of other User's changes. 
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Ping.parseInput">
+            <summary>
+            Handles all incoming modifications to myUser.
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Ping.getEvents">
+            <summary>
+            Build up the list of property change events of other Users in myRoom.
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Ping.#ctor">
+            <summary>
+            Make default constructor unavailable.
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Ping.#ctor(System.Web.HttpContext,Q42.Wheels.Multiplayer.Server)">
+            <summary>
+            Creates a new Ping instance for the given HttpContext.
+            Internal constructor. Use MuliUser.Application.Ping to invoke.
+            </summary>
+            <param name="context">The current HttpContext.</param>
+            <param name="server">An Multiplayer server instance.</param>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Ping.myUser">
+            <summary>
+            Gets my User instance.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Ping.myRoom">
+            <summary>
+            Gets the Room instance that myUser is in.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Ping.Events">
+            <summary>
+            A list of property change Events that the current User
+            needs to be aware of.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Ping.MyUser">
+            <summary>
+            Me
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Ping.MyRoom">
+            <summary>
+            The room that this User is currently in.
+            </summary>
+        </member>
+        <member name="T:Q42.Wheels.Multiplayer.Server">
+            <summary>
+            Abstract class to represent a Multiplayer server. Offers a
+            mechanisms to determine how to create what property 
+            name/value pairs are allowed.
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Server.#ctor">
+            <summary>
+            Instantiates the server instance and creates a cleanup timer
+            </summary>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Server.GetInput(System.Web.HttpContext)">
+            <summary>
+            Returns the collection of name/value pairs that holds
+            a User's modifications. Usually this is the QueryString
+            or Forms collection.
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Server.ValidateProperty(System.String,System.String)">
+            <summary>
+            Use the ValidateProperty handler to:
+            - Validate if a property name is allowed
+            - Validate if a property value is allowed, or needs to be filtered
+            - Set persistence on the property or not
+            </summary>
+            <param name="name">Name of the property to set.</param>
+            <param name="value">Value of the property to set.</param>
+            <returns>A Property (if ok) or null (if not ok)</returns>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Server.GetMyUser(System.Web.HttpContext)">
+            <summary>
+            Retrieves the User object that represents myself.
+            </summary>
+            <param name="context">The current HttpContext.</param>
+            <returns>My User instance.</returns>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Server.GetMyRoom(System.Web.HttpContext)">
+            <summary>
+            Retrieves the Room object that my User is in.
+            </summary>
+            <param name="context">The current HttpContext.</param>
+            <returns>My User's Room instance.</returns>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Server.OnSessionEnd(System.Web.HttpContext)">
+            <summary>
+            Make sure this method is called upon the Session_End handler
+            in Global.asax. It makes sure that when a session ends, the
+            User for that session ends properly, and other Users get
+            notified about it.
+            </summary>
+            <param name="context">The current HttpContext.</param>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Server.Ping(System.Web.HttpContext)">
+            <summary>
+            Returns the Ping instance for the current HttpContext.
+            Ping can process incoming User modifications and return lists
+            of other Users' modifications and/or disconnection events.
+            </summary>
+            <param name="context">The current HttpContext.</param>
+            <returns>The Ping instance with references to all </returns>
+        </member>
+        <member name="M:Q42.Wheels.Multiplayer.Server.CleanupInterval(System.Object,System.Timers.ElapsedEventArgs)">
+            <summary>
+            Scheduled timer to check for users that have not pinged for more than a
+            given amount of seconds.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Server.MultipleUsersPerSession">
+            <summary>
+            Allow multiple users within the same session or not
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Server.MaxUsersPerRoom">
+            <summary>
+            Maximum number of users in a room, before scaling up to a new room
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Server.MaxPingInterval">
+            <summary>
+            The maximum interval in seconds between two pings of a user. If more
+            seconds pass after its last ping, the user will be disconnected.
+            </summary>
+        </member>
+        <member name="P:Q42.Wheels.Multiplayer.Server.Rooms">
+            <summary>
+            Returns the list of rooms currently active
+            </summary>
+        </member>
+    </members>
+</doc>

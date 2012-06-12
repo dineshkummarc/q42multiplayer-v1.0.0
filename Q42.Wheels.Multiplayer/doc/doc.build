@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Q42.Wheels.Multiplayer Documentation" default="finish" xmlns="http://nant.sf.net/release/0.85/nant.xsd">
+
+  <!-- project.name is the name of the class library and assembly name (be sure to check the project properties in VS!) -->
+  <property name="project.name" value="Q42.Wheels.Multiplayer"/>
+  <property name="project.file" value="../${project.name}.csproj"/>
+  <property name="build.path" value="../bin/Release"/>
+  <property name="ndoc.path" value="C:/Program Files/NDoc"/>
+
+  <!-- finish shows a message after all succeeded -->
+  <target name="finish" depends="ndoc.cleanup">
+    <echo message="Done generating ${project.name}.chm."/>
+  </target>
+
+  <!-- cleans up the created doc directory -->
+  <target name="ndoc.cleanup" depends="ndoc.copy" description="Cleans up ndoc temp paths">
+    <delete dir="doc" />
+  </target>
+
+  <!-- copies the documentation.chm file our own name -->
+  <target name="ndoc.copy" depends="ndoc.create" description="Cleans up ndoc temp paths">
+    <copy file="doc/Documentation.chm" tofile="${project.name}.chm" />
+  </target>
+
+  <!-- runs ndoc console to output the documentation -->
+  <target name="ndoc.create" depends="project.compile">
+    <exec basedir="${ndoc.path}" program="NDocConsole.exe">
+      <arg value="-referencepath ${build.path}" />
+      <arg value="-documenter MSDN-CHM" />
+      <arg value="${build.path}/${project.name}.dll" />
+    </exec>
+  </target>
+
+  <!-- builds the project in release mode, be sure that it outputs an xml file in release mode! -->
+  <target name="project.compile" description="Builds the project in release mode">
+    <msbuild project="${project.file}">
+      <arg value="/property:Configuration=release" />
+      <arg value="/t:Rebuild" />
+    </msbuild>
+  </target>
+
+</project>
